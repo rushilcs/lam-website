@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@cedrugs/pdf-parse": "^1.0.0",
+    "@neondatabase/serverless": "^0.6.0",
     "@radix-ui/react-toast": "^1.2.10",
     "@tailwindcss/vite": "^4.1.4",
     "@vercel/analytics": "^1.5.0",

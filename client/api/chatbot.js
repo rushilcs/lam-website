@@ -31,12 +31,18 @@ export default async function handler(req, res) {
     const response = await chatWithRushil(message, conversationHistory || []);
 
     // Log the interaction (async, don't await - don't block response)
+    console.log('[API] About to call logChatbot...');
     logChatbot({
       message,
       conversationHistory: conversationHistory || [],
       response,
       metadata: {},
-    }).catch(err => console.error('[API] Logging error (non-blocking):', err));
+    }).catch(err => {
+      console.error('[API] Logging error (non-blocking):', err);
+      console.error('[API] Logging error details:', err.message);
+      console.error('[API] Logging error stack:', err.stack);
+    });
+    console.log('[API] logChatbot call initiated (async)');
 
     return res.status(200).json({
       response,

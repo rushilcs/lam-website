@@ -1,7 +1,13 @@
 // Database-based logging using Vercel Postgres
 import { neon } from "@neondatabase/serverless";
 
-const sql = neon(process.env.DATABASE_URL);
+// Check if DATABASE_URL is set
+if (!process.env.DATABASE_URL) {
+  console.error('[Logger] CRITICAL: DATABASE_URL environment variable is not set!');
+  console.error('[Logger] Please set DATABASE_URL in Vercel dashboard under Settings > Environment Variables');
+}
+
+const sql = neon(process.env.DATABASE_URL || '');
 
 
 /**
@@ -58,15 +64,23 @@ export async function initLogTables() {
  * Log a plan generator interaction
  */
 export async function logPlanGenerator(data) {
+  console.log('[Logger] ===== logPlanGenerator START =====');
+  console.log('[Logger] DATABASE_URL set:', !!process.env.DATABASE_URL);
+  console.log('[Logger] logPlanGenerator called with:', {
+    hasCompanyName: !!data.companyName,
+    hasJobDescription: !!data.jobDescription,
+    hasPlan: !!data.plan,
+    hasJobFit: !!data.jobFit,
+    isUrl: data.isUrl,
+    planLength: data.plan?.length || 0,
+  });
+  
+  if (!process.env.DATABASE_URL) {
+    console.error('[Logger] Cannot log: DATABASE_URL is not set');
+    return;
+  }
+  
   try {
-    console.log('[Logger] logPlanGenerator called with:', {
-      hasCompanyName: !!data.companyName,
-      hasJobDescription: !!data.jobDescription,
-      hasPlan: !!data.plan,
-      hasJobFit: !!data.jobFit,
-      isUrl: data.isUrl,
-    });
-
     // Ensure tables exist (idempotent)
     await initLogTables();
     console.log('[Logger] Tables initialized/verified');
@@ -114,12 +128,20 @@ export async function logPlanGenerator(data) {
  * Log a chatbot interaction
  */
 export async function logChatbot(data) {
+  console.log('[Logger] ===== logChatbot START =====');
+  console.log('[Logger] DATABASE_URL set:', !!process.env.DATABASE_URL);
+  console.log('[Logger] logChatbot called with:', {
+    hasMessage: !!data.message,
+    hasResponse: !!data.response,
+    conversationHistoryLength: data.conversationHistory?.length || 0,
+  });
+  
+  if (!process.env.DATABASE_URL) {
+    console.error('[Logger] Cannot log: DATABASE_URL is not set');
+    return;
+  }
+  
   try {
-    console.log('[Logger] logChatbot called with:', {
-      hasMessage: !!data.message,
-      hasResponse: !!data.response,
-      conversationHistoryLength: data.conversationHistory?.length || 0,
-    });
 
     // Ensure tables exist (idempotent)
     await initLogTables();
