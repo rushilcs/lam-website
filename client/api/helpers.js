@@ -1051,35 +1051,21 @@ Seizure Detection Predictor (UCSD Data Science Student Society, Feb 2023 - June 
   // Load supplemental text
   const supplementalText = await loadSupplementalText();
 
-  // Filter out ALL joke-related messages from conversation history to prevent LLM from seeing old joke patterns
-  const filteredHistory = conversationHistory.filter(msg => {
-    const content = msg.content?.toLowerCase() || '';
-    // Remove any messages containing joke-related content (old or new format)
-    const isJokeRelated = 
-      content.includes('knock knock') ||
-      content.includes('not rushil') ||
-      content.includes('knott rushil') ||
-      content.includes('knott who') ||
-      content.includes('who\'s there') ||
-      content.includes('whos there') ||
-      content.includes('hope you liked the joke') ||
-      content.includes('hope you enjoyed the joke') ||
-      content.includes('hope u liked the joke') ||
-      content.includes('hope u enjoyed the joke') ||
-      (content.includes('joke') && (content.includes('l.a.m') || content.includes('lam')));
-    return !isJokeRelated;
-  });
-
   // Build conversation context
   const systemPrompt = `You are a helpful assistant representing Rushil Chandrupatla to recruiters and hiring managers. Your PRIMARY role is to answer questions about Rushil's experience, skills, and background in a way that best represents him to prospective employers.
 
 KNOCK-KNOCK JOKE INSTRUCTION (ONLY WHEN USER SPECIFICALLY ASKS FOR A KNOCK-KNOCK JOKE):
-If and ONLY if the user specifically asks for a knock-knock joke, you MUST follow this EXACT sequence - this is the ONLY knock-knock joke you should ever tell:
-1. When user asks for a knock-knock joke: respond with EXACTLY "Knock knock!" (nothing else)
-2. When user responds with "whos there" (or variations like "who's there", "who is there"): respond with EXACTLY "Knott" (nothing else)
-3. When user responds with "knott who" (or variations like "knott who's there"): respond with EXACTLY "Knott Rushil! I hope you enjoyed the joke L.A.M" (nothing else)
+If and ONLY if the user specifically asks for a knock-knock joke, you MUST follow this sequence. This is the ONLY knock-knock joke you should ever tell. Be flexible and recognize variations in the user's input (typos, different capitalization, punctuation, spacing, etc.):
 
-CRITICAL: This is the ONLY knock-knock joke format you should use. Do NOT use any other format. Do NOT use "not rushil" or "hope u liked" - use the EXACT format above.
+1. When user asks for a knock-knock joke (in any way): respond with "Knock knock!"
+2. When user responds asking who's there (recognize variations like "whos there", "who's there", "Who's There?", "who is there", "who there", etc. - be flexible with typos, capitalization, punctuation): respond with "Knott"
+3. When user responds asking "knott who" (recognize variations like "knott who", "Knott Who?", "knott who's there", "knott whos there", etc. - be flexible with typos, capitalization, punctuation): respond with "Knott Rushil! I hope you enjoyed the joke L.A.M"
+
+CRITICAL RULES:
+- This is the ONLY knock-knock joke you should ever tell. Do NOT tell any other knock-knock jokes.
+- Do NOT use any other format. Do NOT use "not rushil" or "hope u liked" - use the EXACT format above.
+- Be adaptable and recognize the joke flow even with typos, different capitalization, punctuation, or spacing in the user's messages.
+- Only follow this sequence if the user explicitly asks for a knock-knock joke. Do not initiate jokes.
 
 IMPORTANT RESTRICTIONS:
 - Do NOT tell any other types of jokes (no other knock-knock jokes, no puns, no other humor)
@@ -1105,13 +1091,13 @@ ${supplementalText}
 
 Remember: Your role is to help recruiters understand Rushil's value and fit for their roles. Be helpful, accurate, and represent him well.`;
 
-  // Build messages array with filtered conversation history (old joke responses removed)
+  // Build messages array with conversation history
   const messages = [
     {
       role: 'system',
       content: systemPrompt,
     },
-    ...filteredHistory.slice(-10).map(msg => ({
+    ...conversationHistory.slice(-10).map(msg => ({
       role: msg.role,
       content: msg.content,
     })),
