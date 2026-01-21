@@ -42,6 +42,77 @@ function getSpreadsheetId() {
   return process.env.GOOGLE_SHEET_ID;
 }
 
+const PLAN_SHEET_NAME = 'Plan Generator Logs';
+const CHATBOT_SHEET_NAME = 'Chatbot Logs';
+
+function getHeadersForSheet(sheetName) {
+  if (sheetName === PLAN_SHEET_NAME) {
+    return [
+      'Timestamp',
+      'Company Name',
+      'Job Description',
+      'Job Description Length',
+      'Is URL',
+      'Plan',
+      'Plan Length',
+      'Job Fit',
+      'Job Fit Length',
+      'Metadata',
+      'Error',
+    ];
+  }
+
+  if (sheetName === CHATBOT_SHEET_NAME) {
+    return [
+      'Timestamp',
+      'Message',
+      'Message Length',
+      'Conversation History Length',
+      'Response',
+      'Response Length',
+      'Metadata',
+      'Error',
+    ];
+  }
+
+  return ['Timestamp', 'Payload'];
+}
+
+async function ensureSheetExistsAndHasHeader(sheets, spreadsheetId, sheetName) {
+  // 1) Ensure the sheet/tab exists
+  const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId });
+  const existingTitles = (spreadsheet.data.sheets || []).map(
+    (s) => s.properties && s.properties.title
+  );
+
+  if (!existingTitles.includes(sheetName)) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      resource: {
+        requests: [{ addSheet: { properties: { title: sheetName } } }],
+      },
+    });
+  }
+
+  // 2) Ensure header row exists (A1 populated)
+  const headerResp = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${sheetName}!A1:Z1`,
+  });
+
+  const firstRow = (headerResp.data.values && headerResp.data.values[0]) || [];
+  const headers = getHeadersForSheet(sheetName);
+
+  if (firstRow.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${sheetName}!A1`,
+      valueInputOption: 'RAW',
+      resource: { values: [headers] },
+    });
+  }
+}
+
 /**
  * Append a row to a Google Sheet
  */
@@ -55,6 +126,8 @@ async function appendRow(sheetName, values) {
       return;
     }
 
+    await ensureSheetExistsAndHasHeader(sheets, spreadsheetId, sheetName);
+
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: `${sheetName}!A:Z`,
@@ -67,7 +140,16 @@ async function appendRow(sheetName, values) {
 
     console.log(`[Logger] Log appended to ${sheetName}`);
   } catch (error) {
-    console.error(`[Logger] Error appending to ${sheetName}:`, error);
+    console.error(
+      `[Logger] Error appending to ${sheetName}:`,
+      error?.message || error
+    );
+    if (error?.response?.data?.error) {
+      console.error('[Logger] Google API error:', error.response.data.error);
+    }
+    console.error(
+      `[Logger] Troubleshooting: ensure GOOGLE_SHEET_ID is correct, the service account email is shared as Editor, and GOOGLE_SERVICE_ACCOUNT_CREDENTIALS is valid JSON.`
+    );
     // Don't throw - logging failures shouldn't break the API
   }
 }
@@ -115,51 +197,9 @@ export async function initSheets() {
       return;
     }
 
-    // Plan Generator Logs headers
-    const planHeaders = [
-      'Timestamp',
-      'Company Name',
-      'Job Description',
-      'Job Description Length',
-      'Is URL',
-      'Plan',
-      'Plan Length',
-      'Job Fit',
-      'Job Fit Length',
-      'Metadata',
-      'Error'
-    ];
-
-    // Chatbot Logs headers
-    const chatbotHeaders = [
-      'Timestamp',
-      'Message',
-      'Message Length',
-      'Conversation History Length',
-      'Response',
-      'Response Length',
-      'Metadata',
-      'Error'
-    ];
-
-    // Clear existing data and add headers
-    await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      range: 'Plan Generator Logs!A1',
-      valueInputOption: 'RAW',
-      resource: {
-        values: [planHeaders],
-      },
-    });
-
-    await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      range: 'Chatbot Logs!A1',
-      valueInputOption: 'RAW',
-      resource: {
-        values: [chatbotHeaders],
-      },
-    });
+    // Idempotent: create missing tabs + header row if missing
+    await ensureSheetExistsAndHasHeader(sheets, spreadsheetId, PLAN_SHEET_NAME);
+    await ensureSheetExistsAndHasHeader(sheets, spreadsheetId, CHATBOT_SHEET_NAME);
 
     console.log('[Logger] Google Sheets initialized with headers');
   } catch (error) {
@@ -187,7 +227,7 @@ export async function logPlanGenerator(data) {
     data.error || '',
   ];
 
-  await appendRow('Plan Generator Logs', row);
+  await appendRow(PLAN_SHEET_NAME, row);
 }
 
 /**
@@ -207,14 +247,14 @@ export async function logChatbot(data) {
     data.error || '',
   ];
 
-  await appendRow('Chatbot Logs', row);
+  await appendRow(CHATBOT_SHEET_NAME, row);
 }
 
 /**
  * Get all plan generator logs
  */
 export async function getPlanLogs(limit = 1000) {
-  const rows = await readRows('Plan Generator Logs', limit);
+  const rows = await readRows(PLAN_SHEET_NAME, limit);
   
   return rows.map(row => {
     let metadata = {};
@@ -250,7 +290,7 @@ export async function getPlanLogs(limit = 1000) {
  * Get all chatbot logs
  */
 export async function getChatbotLogs(limit = 1000) {
-  const rows = await readRows('Chatbot Logs', limit);
+  const rows = await readRows(CHATBOT_SHEET_NAME, limit);
   
   return rows.map(row => {
     let metadata = {};
@@ -285,8 +325,8 @@ export async function getChatbotLogs(limit = 1000) {
 export async function getLogStats() {
   try {
     const [planRows, chatbotRows] = await Promise.all([
-      readRows('Plan Generator Logs', 10000),
-      readRows('Chatbot Logs', 10000),
+      readRows(PLAN_SHEET_NAME, 10000),
+      readRows(CHATBOT_SHEET_NAME, 10000),
     ]);
 
     return {
