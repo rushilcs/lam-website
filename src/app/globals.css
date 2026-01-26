@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aktiv Grotesk Extended Semibold */
+/* 
+ * To use Aktiv Grotesk Extended Semibold, choose one of these options:
+ * 
+ * OPTION 1: Adobe Fonts (Recommended)
+ * 1. Get your Adobe Fonts kit ID from https://fonts.adobe.com/
+ * 2. Uncomment the code in src/components/FontLoader.tsx and add your kit ID
+ * 3. The font-family name will be 'aktiv-grotesk-extended'
+ * 
+ * OPTION 2: Local Font Files
+ * 1. Place font files in /public/fonts/
+ * 2. Uncomment the @font-face below and update paths
+ */
+
+/* Uncomment if using local font files:
+@font-face {
+  font-family: 'Aktiv Grotesk Extended';
+  src: url('/fonts/AktivGroteskExtended-SemiBold.woff2') format('woff2'),
+       url('/fonts/AktivGroteskExtended-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --border: #e5e5e5;
+}
+
+* {
+  @apply border-border;
+}
+
+html {
+  @apply scroll-smooth;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-foreground;
+  /* Use 'aktiv-grotesk-extended' if loading via Adobe Fonts, or 'Aktiv Grotesk Extended' if using @font-face */
+  font-family: 'aktiv-grotesk-extended', 'Aktiv Grotesk Extended', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
