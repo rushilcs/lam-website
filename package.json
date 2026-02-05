@@ -1,31 +1,24 @@
 {
-  "name": "lakshmi-portfolio",
+  "name": "lakshmi-valentine",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.6.1",
-    "framer-motion": "^12.17.1",
-    "lucide-react": "^0.501.0",
-    "next": "^14.2.0",
+    "@fontsource/dancing-script": "^5.2.8",
+    "@fontsource/quicksand": "^5.2.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^8",
-    "eslint-config-next": "^14.2.0",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "@vitejs/plugin-react": "^4.3.1",
     "typescript": "^5",
-    "vercel": "^50.5.2"
+    "vite": "^5.3.4"
   }
 }
