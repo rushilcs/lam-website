@@ -160,6 +160,8 @@ input {
   opacity: 0;
   transform: translateY(10px);
   z-index: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .screen-active {

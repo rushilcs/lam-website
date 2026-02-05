@@ -128,7 +128,7 @@ const App = () => {
 
   useEffect(() => {
     if (step === "dateQuiz" && bothDatesCorrect) {
-      const timeout = window.setTimeout(() => setStep("valentine"), 600);
+      const timeout = window.setTimeout(() => setStep("valentine"), 3000);
       return () => window.clearTimeout(timeout);
     }
     return undefined;
@@ -221,6 +221,7 @@ const App = () => {
                     status={dateStatusBoyfriend}
                     onChange={handleDateBoyfriendChange}
                     prompt="pick the date when i asked to be your boyfriend"
+                    successMessage="wow you still remember that? you must REALLY like me."
                     min="2023-01-01"
                     max="2024-12-31"
                     ariaLabel="Pick the date when I asked to be your boyfriend"
@@ -231,6 +232,7 @@ const App = () => {
                     value={selectedDateLast}
                     status={dateStatusLast}
                     onChange={handleDateLastChange}
+                    successMessage="also known as the day you asked me if we could talk."
                   />
                 }
               />

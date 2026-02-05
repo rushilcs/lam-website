@@ -5,6 +5,7 @@ type DateQuizProps = {
   status: DateQuizStatus;
   onChange: (value: string) => void;
   prompt?: string;
+  successMessage?: string;
   min?: string;
   max?: string;
   ariaLabel?: string;
@@ -15,6 +16,7 @@ const DateQuiz = ({
   status,
   onChange,
   prompt = "pick the date we started talking again",
+  successMessage = "okay yeah 🥺",
   min = "2025-01-01",
   max = "2026-12-31",
   ariaLabel = "Pick the date we started talking again",
@@ -48,7 +50,7 @@ const DateQuiz = ({
         <span className="date-quiz-status">hmm… try again :)</span>
       )}
       {status === "correct" && (
-        <span className="date-quiz-status success">okay yeah 🥺</span>
+        <span className="date-quiz-status success">{successMessage}</span>
       )}
     </div>
   );
