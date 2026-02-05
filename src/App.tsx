@@ -7,6 +7,21 @@ import GameModal from "./components/GameModal";
 import { launchConfetti } from "./Confetti";
 import Background from "./components/Background";
 
+const FinalPhoto = () => {
+  const [errored, setErrored] = useState(false);
+  return errored ? (
+    <div className="final-photo-fallback">
+      <span>Add <code>IMG_2556.jpg</code> to the <code>public</code> folder (convert from HEIC—browsers don’t support HEIC).</span>
+    </div>
+  ) : (
+    <img
+      src="/IMG_2556.jpg"
+      alt="A recent picture of us"
+      onError={() => setErrored(true)}
+    />
+  );
+};
+
 type Step =
   | "intro1"
   | "intro2"
@@ -32,7 +47,8 @@ const INTRO_TEXT: Record<Step, string> = {
 const INTRO_DURATION_MS = 3000;
 const TIMELINE_DURATION_MS = 3000;
 const TRANSITION_MS = 260;
-const CORRECT_DATE = "2026-01-12";
+const CORRECT_DATE_LAST = "2026-01-12";
+const CORRECT_DATE_BOYFRIEND = "2023-12-19";
 
 const usePrefersReducedMotion = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -68,8 +84,10 @@ const App = () => {
   const [prevStep, setPrevStep] = useState<Step | null>(null);
   const stepRef = useRef(step);
 
-  const [selectedDate, setSelectedDate] = useState("");
-  const [dateStatus, setDateStatus] = useState<DateQuizStatus>("idle");
+  const [selectedDateLast, setSelectedDateLast] = useState("");
+  const [selectedDateBoyfriend, setSelectedDateBoyfriend] = useState("");
+  const [dateStatusLast, setDateStatusLast] = useState<DateQuizStatus>("idle");
+  const [dateStatusBoyfriend, setDateStatusBoyfriend] = useState<DateQuizStatus>("idle");
   const [noCaption, setNoCaption] = useState(false);
 
   useEffect(() => {
@@ -105,13 +123,16 @@ const App = () => {
     return undefined;
   }, [step]);
 
+  const bothDatesCorrect =
+    dateStatusLast === "correct" && dateStatusBoyfriend === "correct";
+
   useEffect(() => {
-    if (step === "dateQuiz" && dateStatus === "correct") {
+    if (step === "dateQuiz" && bothDatesCorrect) {
       const timeout = window.setTimeout(() => setStep("valentine"), 600);
       return () => window.clearTimeout(timeout);
     }
     return undefined;
-  }, [step, dateStatus]);
+  }, [step, bothDatesCorrect]);
 
   useEffect(() => {
     if (step === "final" && !prefersReducedMotion) {
@@ -123,14 +144,25 @@ const App = () => {
     return undefined;
   }, [step, prefersReducedMotion]);
 
-  const handleDateChange = useCallback((value: string) => {
-    setSelectedDate(value);
-    if (value === CORRECT_DATE) {
-      setDateStatus("correct");
+  const handleDateLastChange = useCallback((value: string) => {
+    setSelectedDateLast(value);
+    if (value === CORRECT_DATE_LAST) {
+      setDateStatusLast("correct");
     } else if (value) {
-      setDateStatus("incorrect");
+      setDateStatusLast("incorrect");
     } else {
-      setDateStatus("idle");
+      setDateStatusLast("idle");
+    }
+  }, []);
+
+  const handleDateBoyfriendChange = useCallback((value: string) => {
+    setSelectedDateBoyfriend(value);
+    if (value === CORRECT_DATE_BOYFRIEND) {
+      setDateStatusBoyfriend("correct");
+    } else if (value) {
+      setDateStatusBoyfriend("incorrect");
+    } else {
+      setDateStatusBoyfriend("idle");
     }
   }, []);
 
@@ -139,8 +171,15 @@ const App = () => {
   }, []);
 
   const lastItemDate = useMemo(
-    () => (dateStatus === "correct" ? formatDisplayDate(CORRECT_DATE) : ""),
-    [dateStatus]
+    () => (dateStatusLast === "correct" ? formatDisplayDate(CORRECT_DATE_LAST) : ""),
+    [dateStatusLast]
+  );
+  const boyfriendItemDate = useMemo(
+    () =>
+      dateStatusBoyfriend === "correct"
+        ? formatDisplayDate(CORRECT_DATE_BOYFRIEND)
+        : "",
+    [dateStatusBoyfriend]
   );
 
   const renderStep = (activeStep: Step) => {
@@ -156,7 +195,11 @@ const App = () => {
               <h2>our timeline</h2>
             </div>
             <div className="glass-panel timeline-panel">
-              <Timeline lastDate={lastItemDate} highlightLast={false} />
+              <Timeline
+                lastDate={lastItemDate}
+                boyfriendDate={boyfriendItemDate}
+                highlightLast={false}
+              />
             </div>
           </div>
         );
@@ -169,12 +212,24 @@ const App = () => {
             <div className="glass-panel timeline-panel">
               <Timeline
                 lastDate={lastItemDate}
+                boyfriendDate={boyfriendItemDate}
                 highlightLast
+                boyfriendExtraContent={
+                  <DateQuiz
+                    value={selectedDateBoyfriend}
+                    status={dateStatusBoyfriend}
+                    onChange={handleDateBoyfriendChange}
+                    prompt="pick the date when i asked to be your boyfriend"
+                    min="2023-01-01"
+                    max="2024-12-31"
+                    ariaLabel="Pick the date when I asked to be your boyfriend"
+                  />
+                }
                 extraContent={
                   <DateQuiz
-                    value={selectedDate}
-                    status={dateStatus}
-                    onChange={handleDateChange}
+                    value={selectedDateLast}
+                    status={dateStatusLast}
+                    onChange={handleDateLastChange}
                   />
                 }
               />
@@ -207,7 +262,7 @@ const App = () => {
             </div>
             <div id="confetti-layer" />
             <div className="final-photo">
-              <img src="/IMG_2556.HEIC" alt="A recent picture of us" />
+              <FinalPhoto />
               <p>unfortunately this is somehow one of the more recent pictures of us</p>
             </div>
           </div>

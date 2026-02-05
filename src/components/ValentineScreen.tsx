@@ -53,9 +53,10 @@ const ValentineScreen = ({ onYes, onNoDisappear, showCaption }: ValentineScreenP
     []
   );
 
+  // Set initial NO position once after the valentine card has finished animating
+  // (card animates ~220ms) so YES button layout is stable. No movement until user hovers.
   useEffect(() => {
-    if (noPosition || !anchorRef.current || !noRef.current || !zoneRef.current) return;
-    const measure = () => {
+    const t = window.setTimeout(() => {
       const zone = zoneRef.current;
       const yesBtn = yesRef.current;
       const noBtn = noRef.current;
@@ -68,10 +69,9 @@ const ValentineScreen = ({ onYes, onNoDisappear, showCaption }: ValentineScreenP
       const y = yesRect.top - zoneRect.top + (yesRect.height - noHeight) / 2;
       const initial = positionWithinViewport(x, y);
       setNoPosition(initial);
-    };
-    const id = requestAnimationFrame(() => requestAnimationFrame(measure));
-    return () => cancelAnimationFrame(id);
-  }, [noPosition, positionWithinViewport]);
+    }, 320);
+    return () => window.clearTimeout(t);
+  }, [positionWithinViewport]);
 
   const triggerDodge = useCallback(() => {
     if (noHidden) return;

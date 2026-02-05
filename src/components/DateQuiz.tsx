@@ -4,12 +4,24 @@ type DateQuizProps = {
   value: string;
   status: DateQuizStatus;
   onChange: (value: string) => void;
+  prompt?: string;
+  min?: string;
+  max?: string;
+  ariaLabel?: string;
 };
 
-const DateQuiz = ({ value, status, onChange }: DateQuizProps) => {
+const DateQuiz = ({
+  value,
+  status,
+  onChange,
+  prompt = "pick the date we started talking again",
+  min = "2025-01-01",
+  max = "2026-12-31",
+  ariaLabel = "Pick the date we started talking again",
+}: DateQuizProps) => {
   return (
     <div className="date-quiz" aria-live="polite">
-      <p className="date-quiz-prompt">pick the date we started talking again</p>
+      <p className="date-quiz-prompt">{prompt}</p>
       <label className="date-input-pill">
         <span className="date-input-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
@@ -25,11 +37,11 @@ const DateQuiz = ({ value, status, onChange }: DateQuizProps) => {
         </span>
         <input
           type="date"
-          min="2025-01-01"
-          max="2026-12-31"
+          min={min}
+          max={max}
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          aria-label="Pick the date we started talking again"
+          aria-label={ariaLabel}
         />
       </label>
       {status === "incorrect" && (

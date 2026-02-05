@@ -16,19 +16,26 @@ const BASE_ITEMS: TimelineItem[] = [
 
 type TimelineProps = {
   lastDate?: string;
+  boyfriendDate?: string;
   highlightLast?: boolean;
   compact?: boolean;
   extraContent?: ReactNode;
+  boyfriendExtraContent?: ReactNode;
 };
 
 const Timeline = ({
   lastDate,
+  boyfriendDate,
   highlightLast = false,
   compact = false,
   extraContent,
+  boyfriendExtraContent,
 }: TimelineProps) => {
+  const baseWithBoyfriend = BASE_ITEMS.map((item, i) =>
+    i === 2 ? { ...item, date: boyfriendDate ?? "(pick the date)" } : item
+  );
   const items = [
-    ...BASE_ITEMS,
+    ...baseWithBoyfriend,
     {
       label: "we started talking again",
       date: lastDate || "(pick the date)",
@@ -53,10 +60,19 @@ const Timeline = ({
               <div className="timeline-card">
                 <div className="timeline-content">
                   <span className="timeline-label">{item.label}</span>
-                  <span className={`timeline-date ${isLast && !lastDate ? "muted-italic" : ""}`}>
+                  <span
+                    className={`timeline-date ${
+                      (isLast && !lastDate) || (index === 2 && !boyfriendDate)
+                        ? "muted-italic"
+                        : ""
+                    }`}
+                  >
                     {item.date}
                   </span>
                 </div>
+                {index === 2 && boyfriendExtraContent && (
+                  <div className="timeline-extra">{boyfriendExtraContent}</div>
+                )}
                 {isLast && extraContent && <div className="timeline-extra">{extraContent}</div>}
               </div>
             </li>

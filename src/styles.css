@@ -1,3 +1,16 @@
+/* Aktiv Grotesk Extended – add font file to public/fonts/ or rely on local install */
+@font-face {
+  font-family: "Aktiv Grotesk Extended";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Aktiv Grotesk Extended SemiBold"),
+    local("Aktiv Grotesk Extended Semibold"),
+    local("AktivGroteskExtended-SemiBold"),
+    url("/fonts/AktivGroteskExtended-SemiBold.woff2") format("woff2"),
+    url("/fonts/AktivGroteskExtended-SemiBold.woff") format("woff");
+}
+
 :root {
   --bg: #fff7f9;
   --primary: #e11d48;
@@ -207,8 +220,9 @@ input {
 .intro-screen h1 {
   margin: 0;
   color: var(--primary);
+  font-family: "Aktiv Grotesk Extended", system-ui, -apple-system, sans-serif;
   font-size: clamp(44px, 7vw, 76px);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: var(--heading-track);
   text-align: center;
   text-shadow: 0 10px 30px rgba(225, 29, 72, 0.18);
@@ -689,21 +703,16 @@ input {
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
-.valentine-screen .btn-primary {
-  background: #fff;
-  color: var(--primary);
+.valentine-screen .btn-primary,
+.valentine-screen .btn-secondary {
+  background: linear-gradient(180deg, #e8c547 0%, #d4a84c 50%, #c99a3d 100%);
+  color: #5c3317;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 16px 40px rgba(255, 255, 255, 0.18), 0 0 30px rgba(255, 77, 125, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 77, 125, 0.35),
+    0 0 50px rgba(255, 77, 125, 0.2);
   position: relative;
   overflow: hidden;
-}
-
-.valentine-screen .btn-secondary {
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--primary);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
 }
 
 .valentine-screen .btn-primary::before,
@@ -711,10 +720,10 @@ input {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
   transform: translateX(-60%);
   transition: transform 240ms ease;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .valentine-screen .btn-primary:hover::before,
@@ -725,7 +734,8 @@ input {
 .valentine-screen .btn-primary:hover,
 .valentine-screen .btn-secondary:not(.no-button):hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(255, 255, 255, 0.18), 0 0 40px rgba(255, 77, 125, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 0 40px rgba(255, 77, 125, 0.4),
+    0 0 60px rgba(255, 77, 125, 0.25);
 }
 .valentine-screen .btn:active:not(.no-button) {
   transform: scale(0.97);
@@ -736,9 +746,9 @@ input {
   top: 0;
   left: 0;
   z-index: 4;
-  transition-property: transform;
-  transition-duration: var(--no-move-ms, 120ms);
-  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-property: transform, box-shadow;
+  transition-duration: var(--no-move-ms, 120ms), 160ms;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1), ease;
   will-change: transform;
   backface-visibility: hidden;
   filter: none;
@@ -880,6 +890,26 @@ input {
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: var(--shadow-soft);
   object-fit: cover;
+}
+
+.final-photo-fallback {
+  width: 100%;
+  min-height: 200px;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.final-photo-fallback code {
+  font-family: ui-monospace, monospace;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .final-photo p {
