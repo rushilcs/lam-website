@@ -214,6 +214,7 @@ const App = () => {
                 lastDate={lastItemDate}
                 boyfriendDate={boyfriendItemDate}
                 highlightLast
+                highlightBoyfriend
                 boyfriendExtraContent={
                   <DateQuiz
                     value={selectedDateBoyfriend}
@@ -258,7 +259,6 @@ const App = () => {
             <div className="final-copy">
               <h1>Guess I’m your Valentine now (again) 💘</h1>
               <p>I was hoping you’d catch that heart.</p>
-              <span>Happy Valentine’s Day.</span>
             </div>
             <div id="confetti-layer" />
             <div className="final-photo">

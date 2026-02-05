@@ -18,6 +18,7 @@ type TimelineProps = {
   lastDate?: string;
   boyfriendDate?: string;
   highlightLast?: boolean;
+  highlightBoyfriend?: boolean;
   compact?: boolean;
   extraContent?: ReactNode;
   boyfriendExtraContent?: ReactNode;
@@ -27,6 +28,7 @@ const Timeline = ({
   lastDate,
   boyfriendDate,
   highlightLast = false,
+  highlightBoyfriend = false,
   compact = false,
   extraContent,
   boyfriendExtraContent,
@@ -48,7 +50,9 @@ const Timeline = ({
       <ul>
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
-          const highlight = highlightLast && isLast;
+          const highlightLastItem = highlightLast && isLast;
+          const highlightBoyfriendItem = highlightBoyfriend && index === 2;
+          const highlight = highlightLastItem || highlightBoyfriendItem;
           const delay = `${index * 80}ms`;
           return (
             <li

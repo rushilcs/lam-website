@@ -693,23 +693,24 @@ input {
 }
 
 .valentine-screen .btn {
-  min-height: 44px;
-  min-width: 96px;
-  padding: 10px 20px;
+  min-height: 52px;
+  min-width: 120px;
+  padding: 14px 28px;
   border-radius: var(--radius-pill);
   border: 1px solid transparent;
-  font-size: 16px;
+  font-family: "Aktiv Grotesk Extended", system-ui, -apple-system, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .valentine-screen .btn-primary,
 .valentine-screen .btn-secondary {
-  background: linear-gradient(180deg, #e8c547 0%, #d4a84c 50%, #c99a3d 100%);
-  color: #5c3317;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 77, 125, 0.35),
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12), 0 0 30px rgba(255, 77, 125, 0.35),
     0 0 50px rgba(255, 77, 125, 0.2);
   position: relative;
   overflow: hidden;
@@ -720,10 +721,10 @@ input {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
   transform: translateX(-60%);
   transition: transform 240ms ease;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .valentine-screen .btn-primary:hover::before,
@@ -734,7 +735,7 @@ input {
 .valentine-screen .btn-primary:hover,
 .valentine-screen .btn-secondary:not(.no-button):hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 0 40px rgba(255, 77, 125, 0.4),
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.15), 0 0 40px rgba(255, 77, 125, 0.4),
     0 0 60px rgba(255, 77, 125, 0.25);
 }
 .valentine-screen .btn:active:not(.no-button) {
@@ -856,7 +857,9 @@ input {
 
 .final-copy h1 {
   margin: 0 0 12px 0;
+  font-family: "Aktiv Grotesk Extended", system-ui, -apple-system, sans-serif;
   font-size: clamp(32px, 5vw, 54px);
+  font-weight: 600;
   color: var(--primary);
 }
 
