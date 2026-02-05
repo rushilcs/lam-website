@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import IntroScreen from "./components/IntroScreen";
 import Timeline from "./components/Timeline";
 import DateQuiz, { DateQuizStatus } from "./components/DateQuiz";
@@ -181,7 +181,6 @@ const App = () => {
         : "",
     [dateStatusBoyfriend]
   );
-
   const renderStep = (activeStep: Step) => {
     switch (activeStep) {
       case "intro1":
@@ -220,7 +219,7 @@ const App = () => {
                     value={selectedDateBoyfriend}
                     status={dateStatusBoyfriend}
                     onChange={handleDateBoyfriendChange}
-                    prompt="pick the date when i asked to be your boyfriend"
+                    prompt="(pick the date)"
                     successMessage="wow you still remember that? you must REALLY like me."
                     min="2023-01-01"
                     max="2024-12-31"
@@ -283,7 +282,7 @@ const App = () => {
     <div
       className="app"
       data-reduced-motion={prefersReducedMotion ? "true" : "false"}
-      style={{ ["--transition-ms" as const]: `${transitionDuration}ms` }}
+      style={{ "--transition-ms": `${transitionDuration}ms` } as CSSProperties}
     >
       <Background variant={backgroundVariant} showHearts={showHearts && !prefersReducedMotion} />
       {prevStep && (
