@@ -265,7 +265,7 @@ const App = () => {
             <div id="confetti-layer" />
             <div className="final-photo">
               <FinalPhoto />
-              <p>unfortunately this is somehow one of the more recent pictures of us</p>
+              <p>unfortunately this is somehow one of the more recent pictures of us #throwbackthursday</p>
             </div>
           </div>
         );

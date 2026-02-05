@@ -83,6 +83,11 @@ const Timeline = ({
           );
         })}
       </ul>
+      <div className="timeline-pagination" aria-hidden="true">
+        {items.map((item) => (
+          <span key={item.label} className="timeline-page-dot" />
+        ))}
+      </div>
     </div>
   );
 };
