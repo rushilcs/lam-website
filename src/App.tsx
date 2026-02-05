@@ -106,17 +106,9 @@ const App = () => {
     const introIndex = INTRO_STEPS.indexOf(step);
     if (introIndex >= 0) {
       const timeout = window.setTimeout(() => {
-        const next = INTRO_STEPS[introIndex + 1] ?? "timeline";
+        const next = INTRO_STEPS[introIndex + 1] ?? "dateQuiz";
         setStep(next);
       }, INTRO_DURATION_MS);
-      return () => window.clearTimeout(timeout);
-    }
-
-    if (step === "timeline") {
-      const timeout = window.setTimeout(
-        () => setStep("dateQuiz"),
-        TIMELINE_DURATION_MS
-      );
       return () => window.clearTimeout(timeout);
     }
 
