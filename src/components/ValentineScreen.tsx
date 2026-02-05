@@ -55,16 +55,22 @@ const ValentineScreen = ({ onYes, onNoDisappear, showCaption }: ValentineScreenP
 
   useEffect(() => {
     if (noPosition || !anchorRef.current || !noRef.current || !zoneRef.current) return;
-    const anchorRect = anchorRef.current.getBoundingClientRect();
-    const buttonRect = noRef.current.getBoundingClientRect();
-    const yesRect = yesRef.current?.getBoundingClientRect() ?? anchorRect;
-    const zoneRect = zoneRef.current.getBoundingClientRect();
-    const gap = 12;
-    const initial = positionWithinViewport(
-      yesRect.left - zoneRect.left + yesRect.width + gap,
-      yesRect.top - zoneRect.top + yesRect.height / 2 - buttonRect.height / 2
-    );
-    setNoPosition(initial);
+    const measure = () => {
+      const zone = zoneRef.current;
+      const yesBtn = yesRef.current;
+      const noBtn = noRef.current;
+      if (!zone || !yesBtn || !noBtn) return;
+      const zoneRect = zone.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+      const noHeight = noBtn.offsetHeight;
+      const gap = 12;
+      const x = yesRect.left - zoneRect.left + yesRect.width + gap;
+      const y = yesRect.top - zoneRect.top + (yesRect.height - noHeight) / 2;
+      const initial = positionWithinViewport(x, y);
+      setNoPosition(initial);
+    };
+    const id = requestAnimationFrame(() => requestAnimationFrame(measure));
+    return () => cancelAnimationFrame(id);
   }, [noPosition, positionWithinViewport]);
 
   const triggerDodge = useCallback(() => {
